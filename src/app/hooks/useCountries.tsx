@@ -1,42 +1,31 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Country } from '../interfaces/country';
 
-const useCountries = (countryName?: string) => {
-  const [countries, setCountries] = useState<Country[]>([]);
+const useCountries = (countryName: string) => {
   const [country, setCountry] = useState<Country | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchCountries = async () => {
-      try {
-        if (countryName) {
-          const response = await axios.get<Country[]>(
-            `https://restcountries.com/v3.1/name/${countryName}`
-          );
-          setCountry(response.data[0]);
-        } else {
+    if (!countryName) return;
 
-          const response = await axios.get<Country[]>('https://restcountries.com/v3.1/all');
-          setCountries(response.data);
-        }
+    const fetchCountry = async () => {
+      try {
+        const response = await fetch(`https://restcountries.com/v3.1/name/${countryName}?fullText=true`);
+        if (!response.ok) throw new Error('Failed to fetch country data');
+        const data = await response.json();
+        setCountry(data[0]);
       } catch (err) {
-        setError('Failed to fetch countries');
+        setError(err.message);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCountries();
+    fetchCountry();
   }, [countryName]);
 
-
-  return { countries, country, loading, error };
+  return { country, loading, error };
 };
 
 export default useCountries;
-
-
-
-// Added for the  client Side Rendering if used

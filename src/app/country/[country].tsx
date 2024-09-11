@@ -10,17 +10,9 @@ const CountryPage = () => {
 
   const { country: countryData, loading, error } = useCountries(country as string);
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (error) {
-    return <p>{error}</p>;
-  }
-
-  if (!countryData) {
-    return <p>Country not found.</p>;
-  }
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
+  if (!countryData) return <p>Country not found.</p>;
 
   return <CountryDetail country={countryData} />;
 };
