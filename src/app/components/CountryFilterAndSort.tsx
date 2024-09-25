@@ -8,7 +8,9 @@ interface CountryFilterAndSortProps {
   countries: Country[];
 }
 
-const CountryFilterAndSort: React.FC<CountryFilterAndSortProps> = ({ countries }) => {
+const CountryFilterAndSort: React.FC<CountryFilterAndSortProps> = ({
+  countries,
+}) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sortKey, setSortKey] = useState<string>("name");
   const [sortOrder, setSortOrder] = useState<string>("asc");
@@ -16,16 +18,23 @@ const CountryFilterAndSort: React.FC<CountryFilterAndSortProps> = ({ countries }
 
   const getRegions = () => {
     const regions = new Set<string>(["All"]);
-    countries.forEach(country => country.region && regions.add(country.region));
+    countries.forEach(
+      (country) => country.region && regions.add(country.region)
+    );
     return Array.from(regions);
   };
 
-  const filteredCountries = countries.filter(country => {
+  const filteredCountries = countries.filter((country) => {
     const name = country.name.common.toLowerCase();
     const capital = country.capital?.[0]?.toLowerCase() || "";
-    const isRegionMatch = selectedRegion === "All" || country.region === selectedRegion;
+    const isRegionMatch =
+      selectedRegion === "All" || country.region === selectedRegion;
 
-    return (name.includes(searchTerm.toLowerCase()) || capital.includes(searchTerm.toLowerCase())) && isRegionMatch;
+    return (
+      (name.includes(searchTerm.toLowerCase()) ||
+        capital.includes(searchTerm.toLowerCase())) &&
+      isRegionMatch
+    );
   });
 
   const sortedCountries = filteredCountries.sort((a, b) => {
@@ -53,8 +62,10 @@ const CountryFilterAndSort: React.FC<CountryFilterAndSortProps> = ({ countries }
           value={selectedRegion}
           onChange={(e) => setSelectedRegion(e.target.value)}
         >
-          {getRegions().map(region => (
-            <option key={region} value={region}>{region}</option>
+          {getRegions().map((region) => (
+            <option key={region} value={region}>
+              {region}
+            </option>
           ))}
         </select>
         <div className="flex items-center gap-4">
@@ -76,13 +87,12 @@ const CountryFilterAndSort: React.FC<CountryFilterAndSortProps> = ({ countries }
           </select>
         </div>
       </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {sortedCountries.map(country => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        {sortedCountries.map((country) => (
           <Link
             href={`/country/${country.name.common}`}
             key={country.name.common}
-            className="block p-4 bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition"
+            className="block max-w-xs w-full mx-auto p-4 bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition"
           >
             <img
               src={country.flags.png}
@@ -90,9 +100,15 @@ const CountryFilterAndSort: React.FC<CountryFilterAndSortProps> = ({ countries }
               className="w-full h-32 object-cover rounded"
             />
             <h2 className="text-xl font-bold mt-4">{country.name.common}</h2>
-            <p className="text-gray-600 dark:text-gray-400">Capital: {country.capital?.[0] || "N/A"}</p>
-            <p className="text-gray-600 dark:text-gray-400">Population: {country.population.toLocaleString()}</p>
-            <p className="text-gray-600 dark:text-gray-400">Region: {country.region}</p>
+            <p className="text-gray-600 dark:text-gray-400">
+              Capital: {country.capital?.[0] || "N/A"}
+            </p>
+            <p className="text-gray-600 dark:text-gray-400">
+              Population: {country.population.toLocaleString()}
+            </p>
+            <p className="text-gray-600 dark:text-gray-400">
+              Region: {country.region}
+            </p>
           </Link>
         ))}
       </div>
